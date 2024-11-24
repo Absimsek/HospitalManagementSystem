@@ -1,2 +1,4 @@
-package Authentiacation;public class Patient {
+package Authentiacation;
+
+public class Patient {
 }

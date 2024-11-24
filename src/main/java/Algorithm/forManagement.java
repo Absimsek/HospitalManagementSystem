@@ -1,2 +1,4 @@
-package ThingsToDo;public class forManagement {
+package Algorithm;
+
+public class forManagement {
 }

@@ -1,2 +1,4 @@
-package Authentiacation;public class Address {
+package Authentiacation;
+
+public class Address extends Patient{
 }

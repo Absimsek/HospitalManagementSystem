@@ -1,2 +1,7 @@
-package ThingsToDo;public class forAppointment {
+package Algorithm;
+
+public class forAppointment {
+    /*
+    
+     */
 }

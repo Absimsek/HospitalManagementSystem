@@ -1,2 +1,4 @@
-package ThingsToDo;public class forAuthentication {
+package Algorithm;
+
+public class forAuthentication {
 }

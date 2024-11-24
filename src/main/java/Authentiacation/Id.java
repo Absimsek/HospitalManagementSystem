@@ -1,2 +1,4 @@
-package Authentiacation;public class Id {
+package Authentiacation;
+
+public class Id extends Patient{
 }
