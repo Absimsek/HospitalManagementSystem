@@ -1,2 +1,4 @@
-package AppointmentManagement;public class Doctor {
+package AppointmentManagement;
+
+public class Doctor {
 }
