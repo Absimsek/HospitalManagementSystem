@@ -1,4 +1,4 @@
 package PatientManagement;
 
-public class Doctor {
+public class Patient {
 }
