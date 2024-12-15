@@ -27,20 +27,21 @@ public class AppointmentDayPlanner {
     }
 
     /**
+     * WHEN YOU CALL TWO TIMES THE FUNCTIONS PROGRAM FORGETTIN ABOUT FIRST INPUTS AND DECLEARING TWICE FIX THAT IF YOU NEEDED
      * Allows doctor to select available appointment days
      * @return List of selected AppointmentDay objects
      */
     public List<AppointmentDay> planAppointmentDays(List<AppointmentDay> selectedDaysFromDoctor) {
         // Track already taken appointments
-        Queue<LocalDateTime> alreadyTakenAppointments = getAlreadyTakenAppointments(selectedDaysFromDoctor);
+        Queue<LocalDate> alreadyTakenAppointments = getAlreadyTakenAppointments(selectedDaysFromDoctor);
 
         // Get number of days to plan
         System.out.println("How many days are you going to plan?");
-        int numberOfDaysToПлан = input.nextInt();
+        int numberOfDaysToPlan = input.nextInt();
         input.nextLine(); // Consume newline
 
         // Display available days
-        displayAvailableDays(numberOfDaysToПлан, alreadyTakenAppointments);
+        displayAvailableDays(numberOfDaysToPlan, alreadyTakenAppointments);
 
         // Get doctor's selected days
         System.out.println("Select the days you are free for appointments (input format: 1,2,3 or 1-5):");
@@ -48,9 +49,10 @@ public class AppointmentDayPlanner {
         
         // Parse and validate selected days
         int[] selectedDaysArray = parseStringToIntegerArray(selectedDays);
-        int[] validatedDaysArray = validateSelectedDays(selectedDaysArray, numberOfDaysToПлан);
-
-        // Create and return appointment days
+        int[] validatedDaysArray = validateSelectedDays(selectedDaysArray, numberOfDaysToPlan);
+        
+        
+        
         return createAppointmentDays(selectedDaysFromDoctor,validatedDaysArray);
     }
 
@@ -58,8 +60,8 @@ public class AppointmentDayPlanner {
      * Retrieves already taken appointments from existing selected days
      * @return Queue of taken appointment dates
      */
-    private Queue<LocalDateTime> getAlreadyTakenAppointments(List<AppointmentDay> selectedDaysFromDoctor) {
-        Queue<LocalDateTime> alreadyTakenAppointments = new LinkedList<>();
+    private Queue<LocalDate> getAlreadyTakenAppointments(List<AppointmentDay> selectedDaysFromDoctor) {
+        Queue<LocalDate> alreadyTakenAppointments = new LinkedList<>();
         
         if (!selectedDaysFromDoctor.isEmpty()) {
             for (AppointmentDay availableAppointmentDate : selectedDaysFromDoctor) {
@@ -77,9 +79,9 @@ public class AppointmentDayPlanner {
      * @param numberOfDays Total number of days to display
      * @param takenAppointments Queue of already taken appointments
      */
-    private void displayAvailableDays(int numberOfDays, Queue<LocalDateTime> takenAppointments) {
+    private void displayAvailableDays(int numberOfDays, Queue<LocalDate> takenAppointments) {
         for (int i = 1; i <= numberOfDays; i++) {
-            LocalDateTime appointmentDate = LocalDateTime.now().plusDays(i);
+            LocalDate appointmentDate = LocalDate.now().plusDays(i);
 
             if (!takenAppointments.isEmpty() && compareDates(appointmentDate, takenAppointments.peek())) {
                 System.out.println(i + ". " + appointmentDate.format(DateTimeFormatter.ISO_DATE) + " IS ALREADY TAKEN!!!");
@@ -111,13 +113,12 @@ public class AppointmentDayPlanner {
      * @return ArrayList of AppointmentDay objects
      */
     private List<AppointmentDay> createAppointmentDays(List<AppointmentDay> selectedDaysFromDoctor,int[] selectedAppointments) {
-        selectedDaysFromDoctor.clear(); // Clear previous selections
         
         for (int selectedAppointment : selectedAppointments) {
             if (selectedAppointment == -1) {
                 continue; // Skip out-of-range selections
             }
-            selectedDaysFromDoctor.add(new AppointmentDay(LocalDateTime.now().plusDays(selectedAppointment)));
+            selectedDaysFromDoctor.add(new AppointmentDay(LocalDate.now().plusDays(selectedAppointment)));
         }
         
         return selectedDaysFromDoctor;
@@ -158,11 +159,8 @@ public class AppointmentDayPlanner {
      * @param date2 Second date to compare
      * @return true if dates are the same, false otherwise
      */
-    public boolean compareDates(LocalDateTime date1, LocalDateTime date2) {
-        LocalDate date1LocalDate = date1.toLocalDate();
-        LocalDate date2LocalDate = date2.toLocalDate();
-
-        return date1LocalDate.equals(date2LocalDate);
+    public boolean compareDates(LocalDate date1, LocalDate date2) {
+        return date1.equals(date2);
     }
     
     

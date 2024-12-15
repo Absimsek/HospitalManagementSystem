@@ -5,93 +5,82 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages appointment scheduling configurations, including 
+ * generating appointment slots, handling break times, and managing appointments.
+ */
 public class AppointmentHoursConfigurations {
 
- 
-    public static final String START_HOUR_DEFAULT = "09:00";
-    public static final String END_HOUR_DEFAULT = "17:00";
+    // Default configuration constants
+    public static final LocalTime START_HOUR_DEFAULT = LocalTime.of(9, 00);
+    public static final LocalTime END_HOUR_DEFAULT = LocalTime.of(17, 00);
     public static final int DEFAULT_APPOINTMENT_DURATION = 30;
-    public static final LocalTime DEFAULT_BREAK_START =LocalTime.of(12,00);
-    public static final LocalTime DEFAULT_BREAK_END =LocalTime.of(13,00);
-    private static AppointmentDay appointmentDayInHandling;
-    private static List<AppointmentNode> appointmentSlots=new ArrayList<>();
-    private static int startingHour;
-    private static int startingMinute;
-    private static int endingHour;
-    private static int endingMinute;
-    private static List<BreakTime> breakTimes= new ArrayList<>();
+    public static final int BREAK_TIME_LENGTH = 60;
+    public static final LocalTime DEFAULT_BREAK_START = LocalTime.of(12, 00);
+    public static final LocalTime DEFAULT_BREAK_END = LocalTime.of(13, 00);
 
-    public static void reset() {
-        appointmentSlots.clear();
-        breakTimes.clear();
-    }
-    
-    private static int appoinmentDurationDecider(String appointmentDuration){
-        return appointmentDuration.isEmpty()
-                ? AppointmentHoursConfigurations.DEFAULT_APPOINTMENT_DURATION
-                : Integer.parseInt(appointmentDuration);
-    }
-    public static List<AppointmentNode> generateAppointmentSlots(String timeRange, String appointmentDurationInput, String breakTime) {
-//         Clear previous slots and breaks
-       if (!appointmentSlots.isEmpty()) { appointmentSlots.clear(); }
-       if (!breakTimes.isEmpty()) { breakTimes.clear(); }
-          
+    // Configurable time ranges for appointments and breaks
+    private static LocalTime[] startingAndEndingTimes = {START_HOUR_DEFAULT, END_HOUR_DEFAULT};
+    private static LocalTime[] breakTimes = {DEFAULT_BREAK_START, DEFAULT_BREAK_END};
 
+    /**
+     * Generates appointment slots based on provided parameters.
+     * 
+     * @param timeRange Optional time range for appointments
+     * @param appointmentDurationInput Duration of each appointment
+     * @param breakTime Optional break time
+     * @return List of generated appointment slots
+     */
+    public static List<AppointmentNode> generateAppointmentSlots(
+            String timeRange, 
+            String appointmentDurationInput, 
+            String breakTime
+    ) {
+        // Determine appointment duration
         int appointmentDuration = appoinmentDurationDecider(appointmentDurationInput);
 
-        // Parse break times if provided
+        // Parse and set break times if provided
         if (breakTime != null) {
-           
-                addBreakTime(breakTime);
-            }
-        
+            breakTimes = parseTimeInput(breakTime, breakTimes);
+        }
 
-        // Generate slots with break times considered
-        if (timeRange.isBlank()) {
-            useDefaultTimes();
+        // Generate slots based on time range
+        if (!timeRange.isEmpty()) {
+            startingAndEndingTimes = parseTimeInput(timeRange, startingAndEndingTimes);
             return createAppointmentSlotsWithBreaks(appointmentDuration);
         } else {
-            parseTimeInput(timeRange);
             return createAppointmentSlotsWithBreaks(appointmentDuration);
         }
     }
 
-    private static void addBreakTime(String breakTimeStr) {
-        try {
-            String[] breakParts = breakTimeStr.split("-");
-            if (breakParts.length != 2) {
-                throw new IllegalArgumentException("Invalid break time format. Use HH.mm-HH.mm");
-            }
-
-            LocalTime breakStart = LocalTime.parse(breakParts[0].trim(),DateTimeFormatter.ofPattern("HH.mm"));
-            LocalTime breakEnd = LocalTime.parse(breakParts[1].trim(),DateTimeFormatter.ofPattern("HH.mm"));
-
-            breakTimes.add(new BreakTime(breakStart, breakEnd));
-        } catch (Exception e) {
-            // Log or handle parsing error as needed
-            String exceptionMessage= breakTimeStr.isEmpty()? "null":breakTimeStr;
-            System.err.println("Could not parse break time: " + exceptionMessage + 
-                    "\n Default Break time will be applied");
-            breakTimes.add(new BreakTime(DEFAULT_BREAK_START,DEFAULT_BREAK_END));
-        }
-    }
-
+    /**
+     * Creates appointment slots, considering break times and available hours.
+     * 
+     * @param appointmentDuration Length of each appointment in minutes
+     * @return List of appointment slots
+     */
     private static List<AppointmentNode> createAppointmentSlotsWithBreaks(int appointmentDuration) {
-        LocalTime currentTime = LocalTime.of(startingHour, startingMinute);
-        LocalTime endTime = LocalTime.of(endingHour, endingMinute);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        // Start from the beginning of the day's available hours
+        LocalTime currentTime = startingAndEndingTimes[0];
         
-        while (currentTime.isBefore(endTime)) {
-            // Check if current time is within any break
+        // Create a list to store appointment slots
+        List<AppointmentNode> appointmentSlots = new ArrayList<>();
+        
+        // Formatter for time display
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm");
+        
+        // Generate slots until end of available hours
+        while (currentTime.isBefore(startingAndEndingTimes[1])) {
+            // Calculate potential slot end time
             LocalTime slotEndTime = currentTime.plusMinutes(appointmentDuration);
             
-            boolean isBreakTime = isTimeInBreak(currentTime)||isTimeInBreak(slotEndTime);
+            // Check if current or end time falls within break time
+            boolean isBreakTime = isTimeInBreak(currentTime) || isTimeInBreak(slotEndTime);
             
             if (!isBreakTime) {
-                
-                
                 // Ensure slot doesn't extend beyond end time or into a break
-                if (slotEndTime.isBefore(endTime) ) {
+                if (slotEndTime.isBefore(startingAndEndingTimes[1])) {
+                    // Create and add appointment node
                     AppointmentNode node = new AppointmentNode(
                             currentTime.format(formatter),
                             slotEndTime.format(formatter)
@@ -102,100 +91,122 @@ public class AppointmentHoursConfigurations {
                     break;
                 }
             } else {
-                // If it's break time, jump to the end of the break
+                // If it's break time, move to next available time
                 if (isTimeInBreak(slotEndTime)) {
-                    currentTime=slotEndTime;
+                    currentTime = slotEndTime;
                     currentTime = getNextAvailableTimeAfterBreak(currentTime);
-                }else  currentTime = getNextAvailableTimeAfterBreak(currentTime);
-                
+                } else {
+                    currentTime = getNextAvailableTimeAfterBreak(currentTime);
+                }
             }
         }
 
         return appointmentSlots;
     }
 
+    /**
+     * Checks if a given time falls within the break period.
+     * 
+     * @param time Time to check
+     * @return True if time is during break, false otherwise
+     */
     private static boolean isTimeInBreak(LocalTime time) {
-        for (BreakTime breakTime : breakTimes) {
-            if (time.isAfter(breakTime.start) && time.isBefore(breakTime.end)) {
-                return true;
-            }
-        }
-        return false;
+        return (!time.isBefore(breakTimes[0]) && time.isBefore(breakTimes[1]));
     }
 
+    /**
+     * Gets the next available time after a break period.
+     * 
+     * @param currentTime Current time being processed
+     * @return Next available time after break
+     */
     private static LocalTime getNextAvailableTimeAfterBreak(LocalTime currentTime) {
-        for (BreakTime breakTime : breakTimes) {
-            if ((!currentTime.isBefore(breakTime.start) && currentTime.isBefore(breakTime.end))) {
-                return breakTime.end;
-            }
+        if ((!currentTime.isBefore(breakTimes[0]) && currentTime.isBefore(breakTimes[1]))) {
+            return breakTimes[1];
         }
         return currentTime;
     }
+
     
-    
-    private static void parseTimeInput(String input) {
-        try {
-            String[] timeParts = input.split("-");
-            if (timeParts.length != 2) {
-                throw new IllegalArgumentException("Invalid time format. Use HH:mm-HH:mm");
-            }
-
-            String[] startComponents = timeParts[0].trim().split(":");
-            String[] endComponents = timeParts[1].trim().split(":");
-
-            startingHour = Integer.parseInt(startComponents[0]);
-            startingMinute = Integer.parseInt(startComponents[1]);
-            endingHour = Integer.parseInt(endComponents[0]);
-            endingMinute = Integer.parseInt(endComponents[1]);
-
-            validateTimeInputs();
-        } catch (Exception e) {
-            // Fall back to default values if parsing fails
-            useDefaultTimes();
-        }
+    /**
+     * Deletes appointments within a specified time interval.
+     * Whenever interval is wrong in order to keep order of appoinments it's sets interval to default break time
+     * 
+     * @param interval Time interval for deletion
+     * @param appointmentNodes List of appointment nodes to process
+     * @return Updated list of appointment nodes
+     */
+    public static List<AppointmentNode> deleteAppointmentsInInterval(
+            String interval, 
+            List<AppointmentNode> appointmentNodes
+    ) {
+        // Parse the interval to get start and end times
+        LocalTime[] deletionInterval = parseTimeInput(interval, breakTimes);
+        
+        // Safely remove appointments within the specified interval
+        appointmentNodes.removeIf(appointmentNode -> {
+            LocalTime nodeStartTime = LocalTime.parse(
+                appointmentNode.getStartTime(), 
+                DateTimeFormatter.ofPattern("HH.mm")
+            );
+            return !nodeStartTime.isBefore(deletionInterval[0]) && 
+                   nodeStartTime.isBefore(deletionInterval[1]);
+        });
+        
+        return appointmentNodes;
     }
 
-   
-    private static void useDefaultTimes() {
-        LocalTime defaultStart = LocalTime.parse(START_HOUR_DEFAULT);
-        LocalTime defaultEnd = LocalTime.parse(END_HOUR_DEFAULT);
-
-        startingHour = defaultStart.getHour();
-        startingMinute = defaultStart.getMinute();
-        endingHour = defaultEnd.getHour();
-        endingMinute = defaultEnd.getMinute();
-    }
-
-
-    
-   public static void appointmentCancel(int selected) {
-        if (selected >= 0 && selected < appointmentSlots.size()) {
-            appointmentSlots.remove(selected);
+    /**
+     * Cancels a specific appointment by its index.
+     * 
+     * @param selected Index of the appointment to cancel
+     * @param appointmentNodes List of appointment nodes
+     */
+    public static void appointmentCancel(int selected, List<AppointmentNode> appointmentNodes) {
+        if (selected >= 0 && selected < appointmentNodes.size()) {
+            appointmentNodes.remove(selected);
         }
     } 
     
-      private static class BreakTime {
-        LocalTime start;
-        LocalTime end;
-
-        BreakTime(LocalTime start, LocalTime end) {
-            this.start = start;
-            this.end = end;
-        }
+      /**
+     * Determines the appointment duration based on input.
+     * If no duration is provided, uses the default duration.
+     * 
+     * @param appointmentDuration Duration input as a string
+     * @return Parsed appointment duration in minutes
+     */
+    private static int appoinmentDurationDecider(String appointmentDuration) {
+        return appointmentDuration.isEmpty()
+                ? AppointmentHoursConfigurations.DEFAULT_APPOINTMENT_DURATION
+                : Integer.parseInt(appointmentDuration);
     }
     
-    private static void validateTimeInputs() {
-        if (startingHour < 0 || startingHour > 23 || endingHour < 0 || endingHour > 23
-                || startingMinute < 0 || startingMinute > 59 || endingMinute < 0 || endingMinute > 59) {
-            throw new IllegalArgumentException("Invalid time values");
-        }
+    /**
+     * Parses time input and returns an array of start and end times.
+     * Falls back to default times if parsing fails.
+     * 
+     * @param input Time range input (e.g., "09.00-17.00")
+     * @param defaultHours Default time range to use if parsing fails
+     * @return Array of start and end times
+     */
+    private static LocalTime[] parseTimeInput(String input, LocalTime[] defaultHours) {
+        LocalTime[] startingAndEnding = new LocalTime[2];
+        try {
+            String[] timeParts = input.split("-");
+            if (timeParts.length != 2) {
+                throw new IllegalArgumentException("Invalid time format. Use HH.mm-HH.mm");
+            }
 
-        LocalTime startTime = LocalTime.of(startingHour, startingMinute);
-        LocalTime endTime = LocalTime.of(endingHour, endingMinute);
+            startingAndEnding[0] = LocalTime.parse(timeParts[0], DateTimeFormatter.ofPattern("HH.mm"));
+            startingAndEnding[1] = LocalTime.parse(timeParts[1], DateTimeFormatter.ofPattern("HH.mm"));
 
-        if (endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("End time cannot be before start time");
+        } catch (Exception e) {
+            System.out.println("Time parsing error: " + e.getMessage());
+            // Use default hours if parsing fails
+            startingAndEnding[0] = defaultHours[0];
+            startingAndEnding[1] = defaultHours[1];
         }
+        return startingAndEnding;
     }
 
 }

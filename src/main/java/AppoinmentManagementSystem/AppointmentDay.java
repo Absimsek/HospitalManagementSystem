@@ -4,6 +4,7 @@
  */
 package AppoinmentManagementSystem;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import java.util.List;
@@ -13,19 +14,20 @@ import java.util.List;
  * @author ysr
  */
 public class AppointmentDay {
-
-    private LocalDateTime appointmentDate = null;
+    //Bu class'da gün için çalışma aralığı ve break time bilgisi tutulnmalı
+    
+    private LocalDate appointmentDate = null;
     private boolean isAppointmentSelectedByManager;
     private List<AppointmentNode> availableAppoinmentHoursInADay;
 
-    public AppointmentDay(LocalDateTime appointmentDate) {
+    public AppointmentDay(LocalDate appointmentDate) {
         this.appointmentDate = appointmentDate;
         isAppointmentSelectedByManager = true;
     }
 
     //Getters and Setters
-    public LocalDateTime getAppointmentDate() { return appointmentDate; }
-    public void setAppointmentDate(LocalDateTime appointmentDate) { this.appointmentDate = appointmentDate;}
+    public LocalDate getAppointmentDate() { return appointmentDate; }
+    public void setAppointmentDate(LocalDate appointmentDate) { this.appointmentDate = appointmentDate;}
     public boolean isAppointmentSelectedByManager() {  return isAppointmentSelectedByManager; }
     public void setIsAppointmentSelectedByManager(boolean isAppointmentSelectedByManager) {    this.isAppointmentSelectedByManager = isAppointmentSelectedByManager;  }
     public List<AppointmentNode> getAvailableAppoinmentHoursInADay() {   return availableAppoinmentHoursInADay;  }

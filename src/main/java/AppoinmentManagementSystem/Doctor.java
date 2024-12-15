@@ -4,6 +4,8 @@
  */
 package AppoinmentManagementSystem;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Stack;
 public class Doctor {
     private String name, age, joiningDate, clinic, identity;
 
-   
+    private List<AppointmentDay> doctorsAppoinmentDays;
     
     private Stack<String> inspectionHistory;
     
@@ -23,6 +25,15 @@ public class Doctor {
         this.joiningDate = joiningDate;
         this.clinic = clinic;
         inspectionHistory=new Stack();
+         doctorsAppoinmentDays=new ArrayList<>();
+    }
+
+     public List<AppointmentDay> getDoctorsAppoinmentDays() {
+        return doctorsAppoinmentDays;
+    }
+
+    public void setDoctorsAppoinmentDays(List<AppointmentDay> doctorsAppoinmentDays) {
+        this.doctorsAppoinmentDays = doctorsAppoinmentDays;
     }
 
     public String getName() {

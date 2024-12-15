@@ -9,7 +9,7 @@ HashMap<Doctor, ArrayList<Appointment>> doctorChoose=new HashMap<>();
     ArrayList<Doctor> doctors=new ArrayList<>();
     ArrayList<Appointment> appointments=new ArrayList<>();
     Scanner input=new Scanner(System.in);
-
+    
     int doctorChosen=1;//menüde seçilecek olan doktor numarası ile değişecek
 public void menu(){//doktor adlarını manuel mi girsek konsoldan mı bilemedim konsoldan girmek amelelik olur sanki sunumda da insanları çok bekletmiş oluruz
     System.out.println("welcome to appointment manager system");

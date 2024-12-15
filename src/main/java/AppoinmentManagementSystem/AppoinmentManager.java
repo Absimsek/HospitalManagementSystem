@@ -87,8 +87,15 @@ public class AppoinmentManager {
     public void showAppoinmentsHoursForSpecifiedDay(LocalDate specifiedDAte, List<AppointmentDay> selectedDaysFromDoctor) {
         AppoinmentShow.showHoursForDay(specifiedDAte, selectedDaysFromDoctor);
     }
-
-
+    /**
+     * 
+     * @param interval
+     * @param appointmentsList
+     * @return 
+     */
+    public List<AppointmentNode> appointmentSlotDestroyer(String interval,List<AppointmentNode> appointmentsList){
+        return AppointmentHoursConfigurations.deleteAppointmentsInInterval(interval, appointmentsList);
+    }
 
 
 //    public void configureAppointmentHours() {

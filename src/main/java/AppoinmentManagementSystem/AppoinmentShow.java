@@ -26,7 +26,7 @@ public class AppoinmentShow {
         System.out.println("Configured Appointments:");
         for (AppointmentDay day : selectedDaysFromDoctor) {
             System.out.println("\nDate: " + 
-                day.getAppointmentDate().toLocalDate().format(DateTimeFormatter.ISO_DATE));
+                day.getAppointmentDate());
             
             if (day.getAvailableAppoinmentHoursInADay() != null && !day.getAvailableAppoinmentHoursInADay().isEmpty()) {
                 System.out.println("Available Time Slots:");
@@ -51,7 +51,7 @@ public class AppoinmentShow {
         for (int i = 0; i < selectedDaysFromDoctor.size(); i++) {
             AppointmentDay day = selectedDaysFromDoctor.get(i);
             System.out.println((i + 1) + ". " + 
-                day.getAppointmentDate().toLocalDate().format(DateTimeFormatter.ISO_DATE));
+                day.getAppointmentDate());
         }
     }
 
@@ -84,13 +84,13 @@ public class AppoinmentShow {
         if (selectedDay.getAvailableAppoinmentHoursInADay() == null || 
             selectedDay.getAvailableAppoinmentHoursInADay().isEmpty()) {
             System.out.println("No hours configured for " + 
-                selectedDay.getAppointmentDate().toLocalDate().format(DateTimeFormatter.ISO_DATE));
+                selectedDay.getAppointmentDate());
             return;
         }
 
         // Display hours for the selected day
         System.out.println("Available Hours for " + 
-            selectedDay.getAppointmentDate().toLocalDate().format(DateTimeFormatter.ISO_DATE) + ":");
+            selectedDay.getAppointmentDate() + ":");
         
         for (int i = 0; i < selectedDay.getAvailableAppoinmentHoursInADay().size(); i++) {
             AppointmentNode slot = selectedDay.getAvailableAppoinmentHoursInADay().get(i);
@@ -107,7 +107,7 @@ public class AppoinmentShow {
         // Find the matching day
         for (int i = 0; i < selectedDaysFromDoctor.size(); i++) {
             AppointmentDay day = selectedDaysFromDoctor.get(i);
-            if (day.getAppointmentDate().toLocalDate().equals(date)) {
+            if (day.getAppointmentDate().equals(date)) {
                 showHoursForDay(i + 1,  selectedDaysFromDoctor);
                 return;
             }
