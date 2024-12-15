@@ -8,10 +8,7 @@ import java.time.LocalDateTime;
 
 import java.util.List;
 
-/**
- *
- * @author ysr
- */
+
   public class AppointmentDay{
            LocalDateTime appointmentDate = null;
         boolean isAppointmentSelectedByManager;
@@ -32,3 +29,4 @@ import java.util.List;
         
         
    }
+
