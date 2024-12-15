@@ -4,7 +4,14 @@
  */
 package CurrentlyImproving;
 
+<<<<<<< HEAD
 
+=======
+/**
+ *
+ * @author ysr
+ */
+>>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,9 +34,15 @@ public class AppointmentDayPlanner {
      * Allows doctor to select available appointment days
      * @return List of selected AppointmentDay objects
      */
+<<<<<<< HEAD
     public ArrayList<AppointmentDay> planAppointmentDays() {
         // Track already taken appointments
         Queue<LocalDateTime> alreadyTakenAppointments = getAlreadyTakenAppointments();
+=======
+    public List<AppointmentDay> planAppointmentDays(List<AppointmentDay> selectedDaysFromDoctor) {
+        // Track already taken appointments
+        Queue<LocalDateTime> alreadyTakenAppointments = getAlreadyTakenAppointments(selectedDaysFromDoctor);
+>>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
 
         // Get number of days to plan
         System.out.println("How many days are you going to plan?");
@@ -48,20 +61,33 @@ public class AppointmentDayPlanner {
         int[] validatedDaysArray = validateSelectedDays(selectedDaysArray, numberOfDaysToПлан);
 
         // Create and return appointment days
+<<<<<<< HEAD
         return createAppointmentDays(validatedDaysArray);
+=======
+        return createAppointmentDays(selectedDaysFromDoctor,validatedDaysArray);
+>>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
     }
 
     /**
      * Retrieves already taken appointments from existing selected days
      * @return Queue of taken appointment dates
      */
+<<<<<<< HEAD
     private Queue<LocalDateTime> getAlreadyTakenAppointments() {
+=======
+    private Queue<LocalDateTime> getAlreadyTakenAppointments(List<AppointmentDay> selectedDaysFromDoctor) {
+>>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
         Queue<LocalDateTime> alreadyTakenAppointments = new LinkedList<>();
         
         if (!selectedDaysFromDoctor.isEmpty()) {
             for (AppointmentDay availableAppointmentDate : selectedDaysFromDoctor) {
+<<<<<<< HEAD
                 if (availableAppointmentDate.isAppointmentSelectedByManager) {
                     alreadyTakenAppointments.add(availableAppointmentDate.appointmentDate);
+=======
+                if (availableAppointmentDate.isAppointmentSelectedByManager()) {
+                    alreadyTakenAppointments.add(availableAppointmentDate.getAppointmentDate());
+>>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
                 }
             }
         }
@@ -107,7 +133,11 @@ public class AppointmentDayPlanner {
      * @param selectedAppointments Array of selected days
      * @return ArrayList of AppointmentDay objects
      */
+<<<<<<< HEAD
     private ArrayList<AppointmentDay> createAppointmentDays(int[] selectedAppointments) {
+=======
+    private List<AppointmentDay> createAppointmentDays(List<AppointmentDay> selectedDaysFromDoctor,int[] selectedAppointments) {
+>>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
         selectedDaysFromDoctor.clear(); // Clear previous selections
         
         for (int selectedAppointment : selectedAppointments) {
@@ -163,11 +193,25 @@ public class AppointmentDayPlanner {
     }
     
     
+<<<<<<< HEAD
     /**
      * Getter for selected days
      * @return List of selected AppointmentDay objects
      */
     public ArrayList<AppointmentDay> getSelectedDays() {
         return selectedDaysFromDoctor;
+=======
+
+    
+    public void cancelDay(List<AppointmentDay> days,int indexOfDay){
+        if (days.size()<indexOfDay) {
+            System.out.println("this day already is not exist!");
+            return;
+        }
+        days.remove(indexOfDay);
+    }
+    public void cancelDAy(LocalDate thisDay){
+        
+>>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
     }
 }
