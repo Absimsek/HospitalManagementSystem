@@ -1,4 +1,4 @@
-package CurrentlyImproving;
+package AppoinmentManagementSystem;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -7,40 +7,6 @@ import java.util.List;
 
 public class AppointmentHoursConfigurations {
 
-<<<<<<< HEAD
-    public static final String START_HOUR_DEFAULT = "09:00";
-    public static final String END_HOUR_DEFAULT = "17:00";
-    public static final int DEFAULT_APPOINTMENT_DURATION = 30;
-
-    private AppointmentDay appointmentDayInHandling;
-    private List<AppointmentNode> appointmentSlots;
-    private int startingHour;
-    private int startingMinute;
-    private int endingHour;
-    private int endingMinute;
-
-    public AppointmentHoursConfigurations(AppointmentDay appointmentDay) {
-        this.appointmentDayInHandling = appointmentDay;
-        this.appointmentSlots = new ArrayList<>();
-    }
-
-    public List<AppointmentNode> generateAppointmentSlots(String timeRange, int appointmentDuration) {
-        int totalSlots;
-        if (timeRange.isBlank()) {
-            useDefaultTimes();
-            totalSlots = calculateTotalSlots(appointmentDuration);
-            createAppointmentNodes(totalSlots, appointmentDuration);
-            return appointmentSlots;
-        } else {
-            parseTimeInput(timeRange);
-            totalSlots = calculateTotalSlots(appointmentDuration);
-            createAppointmentNodes(totalSlots, appointmentDuration);
-            return appointmentSlots;
-        }
-    }
-
-    private void parseTimeInput(String input) {
-=======
  
     public static final String START_HOUR_DEFAULT = "09:00";
     public static final String END_HOUR_DEFAULT = "17:00";
@@ -168,7 +134,6 @@ public class AppointmentHoursConfigurations {
     
     
     private static void parseTimeInput(String input) {
->>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
         try {
             String[] timeParts = input.split("-");
             if (timeParts.length != 2) {
@@ -190,9 +155,6 @@ public class AppointmentHoursConfigurations {
         }
     }
 
-<<<<<<< HEAD
-    private void validateTimeInputs() {
-=======
    
     private static void useDefaultTimes() {
         LocalTime defaultStart = LocalTime.parse(START_HOUR_DEFAULT);
@@ -223,7 +185,6 @@ public class AppointmentHoursConfigurations {
     }
     
     private static void validateTimeInputs() {
->>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
         if (startingHour < 0 || startingHour > 23 || endingHour < 0 || endingHour > 23
                 || startingMinute < 0 || startingMinute > 59 || endingMinute < 0 || endingMinute > 59) {
             throw new IllegalArgumentException("Invalid time values");
@@ -237,39 +198,4 @@ public class AppointmentHoursConfigurations {
         }
     }
 
-<<<<<<< HEAD
-    private void useDefaultTimes() {
-        LocalTime defaultStart = LocalTime.parse(START_HOUR_DEFAULT);
-        LocalTime defaultEnd = LocalTime.parse(END_HOUR_DEFAULT);
-
-        startingHour = defaultStart.getHour();
-        startingMinute = defaultStart.getMinute();
-        endingHour = defaultEnd.getHour();
-        endingMinute = defaultEnd.getMinute();
-    }
-
-    private int calculateTotalSlots(int appointmentDuration) {
-        int totalMinutes = (endingHour - startingHour) * 60 + (endingMinute - startingMinute);
-        return totalMinutes / appointmentDuration;
-    }
-
-    private void createAppointmentNodes(int totalSlots, int appointmentDuration) {
-        LocalTime currentTime = LocalTime.of(startingHour, startingMinute);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-
-        for (int i = 0; i < totalSlots; i++) {
-            LocalTime slotEndTime = currentTime.plusMinutes(appointmentDuration);
-
-            AppointmentNode node = new AppointmentNode(
-                    currentTime.format(formatter),
-                    slotEndTime.format(formatter)
-            );
-
-            appointmentSlots.add(node);
-            currentTime = slotEndTime;
-        }
-    }
-
-=======
->>>>>>> c1c3f129e5d97fdd922a43c50a088a12756c6303
 }
