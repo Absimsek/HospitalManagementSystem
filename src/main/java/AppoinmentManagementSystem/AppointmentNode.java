@@ -6,7 +6,6 @@ package AppoinmentManagementSystem;
 
 
 import java.time.LocalDateTime;
-import queuebasedappointmentsystem.Patient;
 
 /**
  *
