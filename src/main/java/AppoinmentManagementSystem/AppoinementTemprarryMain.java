@@ -4,6 +4,7 @@
  */
 package AppoinmentManagementSystem;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -39,7 +40,7 @@ public class AppoinementTemprarryMain {
          * doctorSelectAppointments function as parameter we send is already
          * created appoinment list side of doctor
          */
-        mydoc.setDoctorsAppoinmentDays(buyrunNasılYardımcıOlam.doctorSelectAppointments(mydoc.getDoctorsAppoinmentDays()));
+        mydoc.setAppointmentDays(buyrunNasılYardımcıOlam.doctorSelectAppointments(mydoc.getAppointmentDays()));
 
         /**
          * Doctor set day specifications at once for all days
@@ -82,34 +83,35 @@ public class AppoinementTemprarryMain {
 //        
 //         }
 //        
-        /**
-         * In here it ask doctor for specific day and that day give ability of
-         * cancel some interval appoinments
-         */
-//            System.out.println("selection of already decleared appoinments for some configurations");
-//            buyrunNasılYardımcıOlam.showDays(mydoc.getDoctorsAppoinmentDays());
-//            System.out.println("\nSelect the day that you want to cancel appoinments");
-//            int nextInt = input.nextInt();input.nextLine();
-//            buyrunNasılYardımcıOlam.showAppoinmentsHoursForSpecifiedDay(nextInt, mydoc.getDoctorsAppoinmentDays());
-//            System.out.println(mydoc.getDoctorsAppoinmentDays().get(nextInt).getAppointmentDate()+"Do you want to configure again?(yes=1/no=0)");
-//            int selection=input.nextInt();
-//            if (selection==1) {
-//                System.out.println("You're configuring the date "+mydoc.getDoctorsAppoinmentDays().get(nextInt).getAppointmentDate() );
-//                buyrunNasılYardımcıOlam.showAppoinmentsHoursForSpecifiedDay(nextInt, mydoc.getDoctorsAppoinmentDays());
-//                System.out.println("Give me the time interval that you want to cancel(like: 14.00-16.00):");
-//                String interval=input.nextLine();
-//                List<AppointmentDay> doctorDays=mydoc.getDoctorsAppoinmentDays();
-//                doctorDays.get(nextInt);
-//                List<AppointmentNode> changedNodes=buyrunNasılYardımcıOlam.appointmentSlotDestroyer(interval, mydoc.getDoctorsAppoinmentDays().get(nextInt).getAvailableAppoinmentHoursInADay());
-//                AppointmentDay newDay=doctorDays.get(nextInt);
-//                doctorDays.remove(nextInt);
-//                newDay.setAvailableAppoinmentHoursInADay(changedNodes);
-//                doctorDays.add(nextInt, newDay);
-//                
-//            }else if(selection==0){
-//                System.out.println("nothing changed as you wish");
-//            }else System.out.println("invalid input");
-//            
+      /**
+             * In here it ask doctor for specific day and that day give ability of cancel some interval appoinments
+             */
+            System.out.println("selection of already decleared appoinments for some configurations");
+            buyrunNasılYardımcıOlam.showDays(mydoc.getAppointmentDays());
+            System.out.println("\nSelect the day that you want to cancel appoinments");
+            int nextInt = input.nextInt();input.nextLine();
+            buyrunNasılYardımcıOlam.showAppoinmentsHoursForSpecifiedDay(nextInt, mydoc.getAppointmentDays());
+            System.out.println(mydoc.getAppointmentDays().get(nextInt-1).getAppointmentDate()+"Do you want to configure again?(yes=1/no=0)");
+            int selection=input.nextInt(); input.nextLine();
+            if (selection==1) {
+                System.out.println("You're configuring the date "+mydoc.getAppointmentDays().get(nextInt-1).getAppointmentDate() );
+                buyrunNasılYardımcıOlam.showAppoinmentsHoursForSpecifiedDay(nextInt, mydoc.getAppointmentDays());
+                System.out.println("Give me the time interval that you want to cancel(like: 14.00-16.00):");
+                String interval=input.nextLine();
+                List<AppointmentDay> doctorDays=mydoc.getAppointmentDays();
+                List<AppointmentNode> changedNodes=buyrunNasılYardımcıOlam.appointmentSlotDestroyer(interval, mydoc.getAppointmentDays().get(nextInt-1).getAvailableAppointmentHoursInADay());
+                AppointmentDay newDay=doctorDays.get(nextInt-1);
+                newDay.setAvailableAppoinmentHoursInADay(changedNodes);
+                doctorDays.set(nextInt-1, newDay);
+                mydoc.setAppointmentDays(doctorDays);
+                buyrunNasılYardımcıOlam.showAppoinmentsHoursForSpecifiedDay(nextInt, doctorDays);
+                
+            }else if(selection==0){
+                System.out.println("nothing changed as you wish");
+            }else System.out.println("invalid input");
+            
+            
+            
         /**
          * In here it shows already created appoinments if doctor want to change
          * specific day information gives that ability

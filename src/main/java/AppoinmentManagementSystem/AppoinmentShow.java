@@ -28,9 +28,9 @@ public class AppoinmentShow {
             System.out.println("\nDate: " + 
                 day.getAppointmentDate());
             
-            if (day.getAvailableAppoinmentHoursInADay() != null && !day.getAvailableAppoinmentHoursInADay().isEmpty()) {
+            if (day.getAvailableAppointmentHoursInADay() != null && !day.getAvailableAppointmentHoursInADay().isEmpty()) {
                 System.out.println("Available Time Slots:");
-                for (AppointmentNode slot : day.getAvailableAppoinmentHoursInADay()) {
+                for (AppointmentNode slot : day.getAvailableAppointmentHoursInADay()) {
                     System.out.println(slot.getStartTime() + " - " + slot.getEndTime());
                 }
             } else {
@@ -81,8 +81,8 @@ public class AppoinmentShow {
         AppointmentDay selectedDay = selectedDaysFromDoctor.get(dayIndex - 1);
 
         // Check if hours are configured
-        if (selectedDay.getAvailableAppoinmentHoursInADay() == null || 
-            selectedDay.getAvailableAppoinmentHoursInADay().isEmpty()) {
+        if (selectedDay.getAvailableAppointmentHoursInADay() == null || 
+            selectedDay.getAvailableAppointmentHoursInADay().isEmpty()) {
             System.out.println("No hours configured for " + 
                 selectedDay.getAppointmentDate());
             return;
@@ -92,8 +92,8 @@ public class AppoinmentShow {
         System.out.println("Available Hours for " + 
             selectedDay.getAppointmentDate() + ":");
         
-        for (int i = 0; i < selectedDay.getAvailableAppoinmentHoursInADay().size(); i++) {
-            AppointmentNode slot = selectedDay.getAvailableAppoinmentHoursInADay().get(i);
+        for (int i = 0; i < selectedDay.getAvailableAppointmentHoursInADay().size(); i++) {
+            AppointmentNode slot = selectedDay.getAvailableAppointmentHoursInADay().get(i);
             System.out.println((i + 1) + ". " + 
                 slot.getStartTime() + " - " + slot.getEndTime());
         }

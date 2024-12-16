@@ -28,11 +28,11 @@ public class Doctor {
          doctorsAppoinmentDays=new ArrayList<>();
     }
 
-     public List<AppointmentDay> getDoctorsAppoinmentDays() {
+     public List<AppointmentDay> getAppointmentDays() {
         return doctorsAppoinmentDays;
     }
 
-    public void setDoctorsAppoinmentDays(List<AppointmentDay> doctorsAppoinmentDays) {
+    public void setAppointmentDays(List<AppointmentDay> doctorsAppoinmentDays) {
         this.doctorsAppoinmentDays = doctorsAppoinmentDays;
     }
 
